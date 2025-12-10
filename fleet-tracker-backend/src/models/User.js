@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+import mongoose from 'mongoose';
+
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -19,10 +19,12 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     enum: ['admin', 'chauffeur'],
-    default: 'user'
-  }
+    default: 'chauffeur'
+  },
+  deletedAt: {
+  type: Date,
+  default: null
+}
 }, { timestamps: true });
 
-
-
-module.exports = mongoose.model('User', userSchema);
+export default  mongoose.model('User', userSchema);
