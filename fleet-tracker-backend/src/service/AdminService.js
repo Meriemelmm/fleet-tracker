@@ -22,17 +22,42 @@ import crypto from 'crypto';
 name,
 email,
 role:role||'chauffeur',
-password:hashedPassword
+password:hashedPassword,
+
 
  })
- return user;
+ return { user, tempPassword };
  
 
  }
- async getAllChauffeurs(){
-    const Chauffeurs= await User.find({role:'chauffeur'}).select('name email role ');
-    return Chauffeurs;
- }
+ async getAllChauffeurs(page = 1, limit = 10) {
+    
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    const skip = (page - 1) * limit;
+
+   
+    const total = await User.countDocuments({ deletedAt: null, role: 'chauffeur' });
+
+    const chauffeurs = await User.find({ role: 'chauffeur', deletedAt: null })
+        .select('name email role')
+        .skip(skip)
+        .limit(limit); 
+
+    return {
+        chauffeurs, 
+        pagination: {
+            currentPage: page,
+            totalPages: Math.ceil(total / limit),
+            totalItems: total,
+            itemsPerPage: limit,
+            hasNextPage: page < Math.ceil(total / limit),
+            hasPrevPage: page > 1
+        }
+    };
+}
+
  async deleteChauffeur(id){
     const Chauffeur= await User.findByIdAndUpdate(id,{deletedAt:new Date()},{new:true});
     return Chauffeur;
