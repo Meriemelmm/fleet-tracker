@@ -15,7 +15,11 @@ const RemorqueShema = new mongoose.Schema({
     enum:['disponible','en_service','en_maintenance'],
     default:'disponible',
     required:true
- }
+ },
+ deletedAt: {
+  type: Date,
+  default: null
+}
 
 
 
@@ -23,4 +27,4 @@ const RemorqueShema = new mongoose.Schema({
 },
     
 { timestamps: true })
-module.exports=mongoose.model("Remorque",RemorqueShema)
+export default mongoose.model("Remorque",RemorqueShema)
