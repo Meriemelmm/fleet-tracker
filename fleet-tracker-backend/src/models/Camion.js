@@ -28,7 +28,13 @@ const CamionSchema = new mongoose.Schema(
             enum: ['disponible', 'en_service', 'en_maintenance'],
             default: 'disponible', 
             required: true
-        }
+        },
+        deletedAt: {
+  type: Date,
+  default: null
+}
+       
+        
     },
     { timestamps: true }
 );
