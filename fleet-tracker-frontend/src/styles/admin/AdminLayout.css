@@ -1,0 +1,28 @@
+@import './variables.css';
+
+.body{
+    background-color: pink;
+}
+/* Layout principal du dashboard admin */
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-light);
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 250px;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-light);
+  padding-top: 60px;
+  margin-top:5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+  }
+}
