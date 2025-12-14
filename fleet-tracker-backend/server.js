@@ -30,8 +30,10 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 // routes:
-app.use('/camions',auth,authorize('admin'),camionRoute);
-app.use('/remorques',auth,authorize('admin'), remorqueRoute);
+// app.use('/camions',auth,authorize('admin'),camionRoute);
+app.use('/camions',camionRoute);
+// app.use('/remorques',auth,authorize('admin'), remorqueRoute);
+app.use('/remorques', remorqueRoute);
 app.use('/admin',auth,authorize('admin'),AdminRoute);
 app.use('/auth',AuthRoute);
 app.use('/pneus',auth,authorize('admin'),PneuRoute);

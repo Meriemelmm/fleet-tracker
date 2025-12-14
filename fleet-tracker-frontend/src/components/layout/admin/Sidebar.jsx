@@ -22,7 +22,13 @@ const AdminSidebar = () => {
  
   const menuItems = [
     { id: 'dashboard', icon: FaTachometerAlt, label: 'Dashboard', path: '/admin' },
-    { id: 'camions', icon: FaTruck, label: 'Camions', path: '/admin/camions' },
+    { id: 'camions', icon: FaTruck, label: 'Camions', path: '/admin/camions' },{
+  id: 'remorques',
+  icon: FaRoute,
+  label: 'Remorques',
+  path: '/admin/remorques'
+}
+,
     { id: 'chauffeurs', icon: FaUsers, label: 'Chauffeurs', path: '/admin/chauffeurs' },
     { id: 'livraisons', icon: FaRoute, label: 'Livraisons', path: '/admin/livraisons' },
     { id: 'maintenance', icon: FaCogs, label: 'Maintenance', path: '/admin/maintenance' },

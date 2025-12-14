@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 import '../../../styles/admin/AdminLayout.css';
 
-const AdminLayout = () => (
+const DashboardLayout  = () => (
   <>
     <div className="admin-layout">
       <Sidebar />
@@ -18,4 +18,4 @@ const AdminLayout = () => (
   </>
 );
 
-export default AdminLayout;
+export default DashboardLayout ;

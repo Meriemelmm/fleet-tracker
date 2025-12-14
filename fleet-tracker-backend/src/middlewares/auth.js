@@ -44,6 +44,7 @@ const auth = async (req, res, next) => {
 
    
     req.user = user;
+    console.log("Authenticated user:", user);
     req.token = bearerToken;
 
     next();

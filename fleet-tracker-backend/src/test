@@ -1,0 +1,425 @@
+import mongoose from 'mongoose';
+import {
+    User,
+    Camion,
+    Remorque,
+    Ravitaillement,
+    Trajet,
+} from '../models/Index.js';
+
+const { ObjectId } = mongoose.Types;
+
+const getTrajetDetails = async (trajetId) => {
+    return Trajet.findById(trajetId)
+        .populate('chauffeur', 'nom prenom email')
+        .populate('camion', 'immatriculation marque modele')
+        .populate('remorque', 'immatriculation type');
+};
+
+export const getTrajets = async (req, res, next) => {
+    try {
+        const trajets = await Trajet.find()
+            .populate('chauffeur', 'nom prenom email')
+            .populate('camion', 'immatriculation marque modele')
+            .populate('remorque', 'immatriculation type')
+            .sort({ createdAt: -1 });
+        res.json(trajets);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getTrajetById = async (req, res, next) => {
+    try {
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ message: 'ID invalide' });
+        }
+
+        const trajet = await getTrajetDetails(req.params.id);
+
+        if (!trajet) {
+            return res.status(404).json({ message: 'Trajet non trouvé' });
+        }
+
+        const ravitaillements = await Ravitaillement.find({
+            trajet: trajet._id,
+        }).select('-trajet');
+        const trajetWithRavitaillements = trajet.toObject();
+        trajetWithRavitaillements.ravitaillements = ravitaillements;
+
+        res.json(trajetWithRavitaillements);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const createTrajet = async (req, res, next) => {
+    try {
+        const {
+            chauffeur,
+            camion,
+            remorque,
+            lieuDepart,
+            lieuArrivee,
+            dateDepart,
+            typeTrajet,
+            statut,
+            notes,
+            distanceEstimee,
+            dureeEstimee,
+            consomationEstimee,
+        } = req.body;
+        
+
+        // Vérification des champs obligatoires
+        if (
+            !chauffeur ||
+            !camion ||
+            !lieuDepart ||
+            !lieuArrivee ||
+            !dateDepart ||
+            !typeTrajet
+        ) {
+            return res.status(400).json({
+                message:
+                    'Chauffeur, camion, lieux, date de départ et type de trajet sont obligatoires',
+            });
+        }
+
+        // Vérification des IDs valides
+        if (
+            !ObjectId.isValid(chauffeur) ||
+            !ObjectId.isValid(camion) ||
+            (remorque && !ObjectId.isValid(remorque))
+        ) {
+            return res
+                .status(400)
+                .json({ message: 'ID chauffeur, camion ou remorque invalide' });
+        }
+
+        // Vérification de l'existence en base
+        const chauffeurExists = await User.findById(chauffeur);
+        if (!chauffeurExists)
+            return res.status(404).json({ message: 'Chauffeur non trouvé' });
+
+        const camionExists = await Camion.findById(camion);
+        if (!camionExists)
+            return res.status(404).json({ message: 'Camion non trouvé' });
+
+        if (remorque) {
+            const remorqueExists = await Remorque.findById(remorque);
+            if (!remorqueExists)
+                return res
+                    .status(404)
+                    .json({ message: 'Remorque non trouvée' });
+        }
+
+        // Vérification typeTrajet
+        const validTypes = [
+            'livraison',
+            'collecte',
+            'transport',
+            'maintenance',
+        ];
+        if (!validTypes.includes(typeTrajet)) {
+            return res.status(400).json({ message: 'Type de trajet invalide' });
+        }
+
+        // Vérification statut
+        if (statut && statut !== 'planifié') {
+            return res.status(400).json({
+                message: "Statut invalide : le statut doit être 'planifié'",
+            });
+        }
+
+        // Création du trajet
+        const trajet = await Trajet.create({
+            chauffeur,
+            camion,
+            remorque: remorque || null,
+            lieuDepart,
+            lieuArrivee,
+            dateDepart,
+            distanceEstimee: distanceEstimee ?? null,
+            dureeEstimee: dureeEstimee ?? null,
+            consomationEstimee: consomationEstimee ?? null,
+            statut: statut || 'planifié',
+            typeTrajet,
+            notes: notes || '',
+        });
+
+        const populatedTrajet = await getTrajetDetails(trajet._id);
+        res.status(201).json(populatedTrajet);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const updateTrajet = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { role, _id: userId } = req.user;
+        const updates = req.body;
+
+        // Vérifier si l'ID est valide
+        if (!ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'ID de trajet invalide' });
+        }
+
+        const trajet = await Trajet.findById(id);
+        if (!trajet)
+            return res.status(404).json({ message: 'Trajet non trouvé' });
+
+        // Permissions chauffeur
+        if (role === 'chauffeur') {
+            if (trajet.chauffeur.toString() !== userId.toString()) {
+                return res.status(403).json({
+                    message: "Vous n'êtes pas le chauffeur de ce trajet",
+                });
+            }
+
+            // Trajet planifié
+            if (trajet.statut === 'planifié') {
+                if (updates.statut && updates.statut !== 'en_cours') {
+                    return res.status(400).json({
+                        message:
+                            'Le chauffeur peut seulement passer le trajet à en_cours',
+                    });
+                }
+                if (
+                    !updates.kilometrageDepart ||
+                    updates.kilometrageDepart < 0
+                ) {
+                    return res.status(400).json({
+                        message:
+                            'Le chauffeur doit saisir un kilometrageDepart valide',
+                    });
+                }
+                const camion = await Camion.findById(trajet.camion);
+                if (updates.kilometrageDepart < camion.kilometrage) {
+                    return res.status(400).json({
+                        message: `Le kilométrage de départ (${updates.kilometrageDepart}) ne peut pas être inférieur au compteur actuel du camion (${camion.kilometrage})`,
+                    });
+                }
+                if (
+                    !updates.carburantDepart ||
+                    updates.carburantDepart < 0 ||
+                    updates.carburantDepart > 100
+                ) {
+                    return res.status(400).json({
+                        message:
+                            'Le chauffeur doit saisir un carburantDepart valide (0-100)',
+                    });
+                }
+            }
+
+            // Trajet en cours
+            if (trajet.statut === 'en_cours') {
+                if (updates.statut && updates.statut !== 'terminé') {
+                    return res.status(400).json({
+                        message:
+                            'Le chauffeur peut seulement passer le trajet à terminé',
+                    });
+                }
+                if (
+                    !updates.kilometrageArrivee ||
+                    updates.kilometrageArrivee < 0
+                ) {
+                    return res.status(400).json({
+                        message:
+                            'Le chauffeur doit saisir un kilometrageArrivee valide',
+                    });
+                }
+                if (updates.kilometrageArrivee < trajet.kilometrageDepart) {
+                    return res.status(400).json({
+                        message: `Le kilométrage d'arrivée (${updates.kilometrageArrivee}) ne peut pas être inférieur au kilométrage de départ (${trajet.kilometrageDepart})`,
+                    });
+                }
+                if (
+                    !updates.carburantArrivee ||
+                    updates.carburantArrivee < 0 ||
+                    updates.carburantArrivee > 100
+                ) {
+                    return res.status(400).json({
+                        message:
+                            'Le chauffeur doit saisir un carburantArrivee valide (0-100)',
+                    });
+                }
+                if (updates.statut === 'terminé') {
+                    updates.dateArrivee = updates.dateArrivee || new Date();
+                }
+            }
+
+            // Trajet terminé ou annulé
+            if (trajet.statut === 'terminé' || trajet.statut === 'annulé') {
+                return res.status(403).json({
+                    message: 'Le chauffeur ne peut pas modifier ce trajet',
+                });
+            }
+
+            // Statut invalide
+            if (
+                trajet.statut !== 'planifié' &&
+                trajet.statut !== 'en_cours' &&
+                trajet.statut !== 'terminé' &&
+                trajet.statut !== 'annulé'
+            ) {
+                return res.status(400).json({
+                    message: 'Statut de trajet invalide',
+                });
+            }
+        }
+
+        // Permissions admin
+        if (role === 'admin') {
+            // Trajet planifié
+            if (trajet.statut === 'planifié') {
+                if (updates.statut === 'terminé') {
+                    const requiredFields = [
+                        'kilometrageDepart',
+                        'carburantDepart',
+                        'kilometrageArrivee',
+                        'carburantArrivee',
+                    ];
+                    const missingFields = requiredFields.filter(
+                        (field) => !updates[field]
+                    );
+                    if (missingFields.length > 0) {
+                        return res.status(400).json({
+                            message: `Champs obligatoires manquants pour terminer le trajet: ${missingFields.join(', ')}`,
+                        });
+                    }
+                    updates.dateArrivee = updates.dateArrivee || new Date();
+                } else {
+                    const creationFields = [
+                        'chauffeur',
+                        'camion',
+                        'remorque',
+                        'lieuDepart',
+                        'lieuArrivee',
+                        'dateDepart',
+                        'dateArrivee',
+                        'distanceEstimee',
+                        'dureeEstimee',
+                        'consomationEstimee',
+                        'typeTrajet',
+                        'notes',
+                        'statut',
+                    ];
+                    Object.keys(updates).forEach((key) => {
+                        if (!creationFields.includes(key))
+                            delete updates[key];
+                    });
+                }
+            }
+
+            // Trajet en cours
+            if (trajet.statut === 'en_cours') {
+                return res.status(403).json({
+                    message:
+                        "L'admin ne peut modifier aucun champ d'un trajet en cours",
+                });
+            }
+
+            // Trajet terminé
+            if (trajet.statut === 'terminé') {
+                const allowedFields = [
+                    'kilometrageDepart',
+                    'carburantDepart',
+                    'kilometrageArrivee',
+                    'carburantArrivee',
+                ];
+                Object.keys(updates).forEach((key) => {
+                    if (!allowedFields.includes(key)) delete updates[key];
+                });
+            }
+
+            // Trajet annulé
+            if (trajet.statut === 'annulé') {
+                if (updates.statut && updates.statut === 'planifié') {
+                    const allowedFieldsAnnule = [
+                        'statut',
+                        'notes',
+                        'dateDepart',
+                    ];
+                    Object.keys(updates).forEach((key) => {
+                        if (!allowedFieldsAnnule.includes(key))
+                            delete updates[key];
+                    });
+                    if (new Date(trajet.dateDepart) < new Date()) {
+                        if (
+                            !updates.dateDepart ||
+                            new Date(updates.dateDepart) <= new Date()
+                        ) {
+                            return res.status(400).json({
+                                message:
+                                    'La date de départ est passée, vous devez fournir une nouvelle date de départ supérieure à maintenant',
+                            });
+                        }
+                    }
+                } else {
+                    return res.status(400).json({
+                        message:
+                            "L'admin peut seulement restaurer le trajet annulé vers planifié",
+                    });
+                }
+            }
+
+            // Statut invalide
+            if (
+                trajet.statut !== 'planifié' &&
+                trajet.statut !== 'en_cours' &&
+                trajet.statut !== 'terminé' &&
+                trajet.statut !== 'annulé'
+            ) {
+                return res.status(400).json({
+                    message: 'Statut de trajet invalide',
+                });
+            }
+        }
+
+        if (role !== 'chauffeur' && role !== 'admin') {
+            return res.status(403).json({ message: 'Rôle non autorisé' });
+        }
+
+        // Mise à jour du trajet
+        Object.assign(trajet, updates);
+        await trajet.save();
+
+        // Mise à jour du statut du camion
+        if (updates.statut === 'en_cours') {
+            await Camion.findByIdAndUpdate(trajet.camion, {
+                statut: 'en_mission',
+            });
+        }
+        
+        if (updates.statut === 'terminé') {
+            await Camion.findByIdAndUpdate(trajet.camion, {
+                statut: 'disponible',
+                kilometrage: updates.kilometrageArrivee,
+            });
+        }
+
+        const populatedTrajet = await getTrajetDetails(trajet._id);
+        res.status(200).json(populatedTrajet);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const deleteTrajet = async (req, res, next) => {
+    try {
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ message: 'ID invalide' });
+        }
+
+        await Ravitaillement.deleteMany({ trajet: req.params.id });
+        const trajet = await Trajet.findByIdAndDelete(req.params.id);
+        if (!trajet) {
+            return res.status(404).json({ message: 'Trajet non trouvé' });
+        }
+        res.json({ message: 'Trajet supprimé' });
+    } catch (error) {
+        next(error);
+    }
+};
