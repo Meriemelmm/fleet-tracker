@@ -34,7 +34,9 @@ app.use(express.json());
 app.use('/camions',camionRoute);
 // app.use('/remorques',auth,authorize('admin'), remorqueRoute);
 app.use('/remorques', remorqueRoute);
-app.use('/admin',auth,authorize('admin'),AdminRoute);
+// app.use('/admin',auth,authorize('admin'),AdminRoute);
+
+app.use('/admin',AdminRoute);
 app.use('/auth',AuthRoute);
 app.use('/pneus',auth,authorize('admin'),PneuRoute);
 app.use('/trajets', TrajetRoute);

@@ -5,9 +5,9 @@ import camionService from '../services/camionService';
 // Actions asynchrones
 export const fetchCamions = createAsyncThunk(
   'camions/fetchAll',
-  async (_, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10 } = {}, { rejectWithValue }) => {
     try {
-         const response=await camionService.getAllCamions();
+         const response=await camionService.getAllCamions(page,limit);
  
       return response;
 

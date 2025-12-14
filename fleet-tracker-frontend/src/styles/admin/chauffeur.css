@@ -1,0 +1,249 @@
+@import "./variables.css";
+
+/* Page */
+.chauffeur-page {
+  padding: 2rem;
+  margin-top: 0rem;
+  background: var(--bg-light);
+}
+
+/* Header */
+.chauffeur-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.chauffeur-header h2 {
+  color: var(--text-dark);
+  font-size: 22px;
+}
+
+/* Button */
+.btn-primary {
+  background: var(--accent);
+  color: var(--white);
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: var(--accent-light);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Stats */
+.chauffeur-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--white);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(43, 72, 102, 0.1);
+}
+
+.stat-card h3 {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.stat-card p {
+  font-size: 26px;
+  font-weight: bold;
+  color: var(--text-dark);
+}
+
+.stat-card .success {
+  color: var(--success);
+}
+
+.stat-card .danger {
+  color: var(--danger);
+}
+
+.stat-card .warning {
+  color: var(--warning);
+}
+
+/* Table Card */
+.chauffeur-table-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(43, 72, 102, 0.1);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.table-header h3 {
+  color: var(--text-dark);
+  font-size: 18px;
+}
+
+.search-input {
+  padding: 8px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 14px;
+  width: 250px;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Table */
+.chauffeur-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.chauffeur-table th,
+.chauffeur-table td {
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.chauffeur-table th {
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-light);
+  font-weight: 600;
+}
+
+.chauffeur-table tr:not(:last-child) td {
+  border-bottom: 1px solid var(--border-light);
+}
+
+
+
+/* Badge */
+.badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.badge.success {
+  background: rgba(89, 175, 174, 0.15);
+  color: var(--success);
+}
+
+.badge.danger {
+  background: rgba(231, 76, 60, 0.15);
+  color: var(--danger);
+}
+
+.badge.warning {
+  background: rgba(240, 148, 92, 0.15);
+  color: var(--warning);
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.icon-btn {
+  border: none;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.icon-btn.edit {
+  background: rgba(89, 175, 174, 0.15);
+  color: var(--success);
+}
+
+.icon-btn.edit:hover {
+  background: rgba(89, 175, 174, 0.25);
+}
+
+.icon-btn.delete {
+  background: rgba(240, 148, 92, 0.15);
+  color: var(--danger);
+}
+
+.icon-btn.delete:hover {
+  background: rgba(240, 148, 92, 0.25);
+}
+
+/* Loading & Error States */
+.loading,
+.error-display,
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.loading i,
+.error-display i,
+.empty-state i {
+  font-size: 48px;
+  margin-bottom: 16px;
+  display: block;
+  color: var(--text-muted);
+}
+
+.error-display {
+  color: var(--danger);
+}
+
+.error-display i {
+  color: var(--danger);
+}
+
+.error-display p {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.empty-state p {
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.loading i {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
