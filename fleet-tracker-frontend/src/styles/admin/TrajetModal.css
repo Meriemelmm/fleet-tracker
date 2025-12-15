@@ -1,0 +1,103 @@
+
+@import "./variables.css";
+
+/* Overlay */
+.trajet-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(43, 72, 102, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+ 
+}
+
+/* Card */
+.trajet-modal-card {
+  background: var(--white);
+  width: 100vh;
+  max-width: 95%;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(43, 72, 102, 0.25);
+}
+
+/* Header */
+.trajet-modal-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.trajet-close-btn {
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+/* Form GRID (3 inputs / line) */
+.trajet-modal-form {
+  padding: 22px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+ 
+}
+
+/* Group */
+.trajet-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.trajet-form-group label {
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: var(--text-muted);
+}
+
+/* Full row */
+.trajet-full {
+  grid-column: 1 / -1;
+}
+
+/* Inputs */
+.trajet-form-group input,
+.trajet-form-group select {
+  padding: 10px;
+  border-radius: 10px;
+  width:30vh;
+  border: 1px solid var(--border-light);
+}
+
+/* Actions */
+.trajet-modal-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.trajet-btn-cancel {
+  border: 1px solid var(--border-light);
+  background: transparent;
+  padding: 8px 18px;
+  border-radius: 10px;
+}
+
+.trajet-btn-primary {
+  background: var(--accent);
+  color: var(--white);
+  border: none;
+  padding: 8px 22px;
+  border-radius: 10px;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .trajet-modal-form {
+    grid-template-columns: 1fr;
+  }
+}
