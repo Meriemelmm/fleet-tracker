@@ -1,0 +1,504 @@
+@import "../admin/variables.css";
+
+/* Page */
+.mes-trajets-page {
+  padding: 2rem;
+  background: var(--bg-light);
+}
+
+/* Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.page-header h2 {
+  color: var(--text-dark);
+  font-size: 22px;
+}
+
+.btn-refresh {
+  background: var(--bg-secondary);
+  color: var(--text-dark);
+  border: 1px solid var(--border-light);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  background: var(--border-light);
+}
+
+.btn-refresh:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Stats */
+.trajets-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Table Card */
+.trajets-table-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(43, 72, 102, 0.1);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.table-header h3 {
+  color: var(--text-dark);
+  font-size: 18px;
+}
+
+.table-filters {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-select {
+  padding: 8px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--white);
+  color: var(--text-dark);
+  min-width: 150px;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Table */
+.trajets-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.trajets-table th,
+.trajets-table td {
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.trajets-table th {
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-light);
+  font-weight: 600;
+}
+
+.trajets-table tr:not(:last-child) td {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.trajets-table tbody tr:hover {
+  background: var(--bg-secondary);
+}
+
+/* Route display */
+.trajet-route {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trajet-route i {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* Status Select */
+.status-select {
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+}
+
+.status-select.à-faire {
+  background: rgba(240, 148, 92, 0.15);
+  color: var(--warning);
+}
+
+.status-select.en-cours {
+  background: rgba(52, 152, 219, 0.15);
+  color: var(--info);
+}
+
+.status-select.terminé {
+  background: rgba(89, 175, 174, 0.15);
+  color: var(--success);
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: currentColor;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.icon-btn {
+  border: none;
+  padding: 6px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.icon-btn.details {
+  background: rgba(52, 152, 219, 0.15);
+  color: var(--info);
+}
+
+.icon-btn.details:hover {
+  background: rgba(52, 152, 219, 0.25);
+}
+
+.icon-btn.edit {
+  background: rgba(89, 175, 174, 0.15);
+  color: var(--success);
+}
+
+.icon-btn.edit:hover {
+  background: rgba(89, 175, 174, 0.25);
+}
+
+/* Modal Styles */
+.modal-lg {
+  max-width: 800px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal-body {
+  padding: 0 20px;
+}
+
+.modal-footer {
+  padding: 20px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Details Sections */
+.details-section {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.details-section:last-child {
+  border-bottom: none;
+}
+
+.details-section h4 {
+  color: var(--text-dark);
+  margin-bottom: 16px;
+  font-size: 16px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.detail-item label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.detail-item p {
+  color: var(--text-dark);
+  font-size: 14px;
+  margin: 0;
+}
+
+.route-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.route-info i {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.km-value {
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.distance {
+  font-weight: bold;
+  color: var(--success);
+}
+
+/* Remarks */
+.remarks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.remark-group label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.remark-content {
+  background: var(--bg-secondary);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-dark);
+  line-height: 1.5;
+  min-height: 60px;
+}
+
+/* Badges */
+.badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.badge.à-faire {
+  background: rgba(240, 148, 92, 0.15);
+  color: var(--warning);
+}
+
+.badge.en-cours {
+  background: rgba(52, 152, 219, 0.15);
+  color: var(--info);
+}
+
+.badge.terminé {
+  background: rgba(89, 175, 174, 0.15);
+  color: var(--success);
+}
+
+/* Form Styles */
+.form-section {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.form-section h4 {
+  color: var(--text-dark);
+  font-size: 16px;
+  margin: 0;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.info-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(52, 152, 219, 0.1);
+  border-radius: 8px;
+  margin: 20px 0;
+  font-size: 13px;
+  color: var(--info);
+}
+
+.info-note i {
+  font-size: 16px;
+}
+
+/* Form Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 10px 12px;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--white);
+  color: var(--text-dark);
+  transition: all 0.3s ease;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(89, 175, 174, 0.1);
+}
+
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+  border-color: var(--danger);
+}
+
+.error-message {
+  color: var(--danger);
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+/* Loading & Error States */
+.loading,
+.error-display,
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  font-size: 16px;
+  color: var(--text-muted);
+}
+
+.loading i,
+.error-display i,
+.empty-state i {
+  font-size: 48px;
+  margin-bottom: 16px;
+  display: block;
+  color: var(--text-muted);
+}
+
+.error-display {
+  color: var(--danger);
+}
+
+.error-display i {
+  color: var(--danger);
+}
+
+.error-display p {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.empty-state p {
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.loading i {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .trajets-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .table-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .trajet-route {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .trajet-route i {
+    transform: rotate(90deg);
+  }
+}
+
+@media (max-width: 480px) {
+  .mes-trajets-page {
+    padding: 1rem;
+  }
+  
+  .trajets-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .trajets-table {
+    display: block;
+    overflow-x: auto;
+  }
+}
