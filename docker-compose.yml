@@ -1,0 +1,56 @@
+
+
+services:
+  frontend:
+    build:
+      context: ./fleet-tracker-frontend
+
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:5000/
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - fleet-network
+
+  backend:
+    build:
+      context: ./fleet-tracker-backend
+
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./fleet-tracker-backend/.env
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    networks:
+      - fleet-network
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=fleet-management
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+    networks:
+      - fleet-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  fleet-network:
+    driver: bridge

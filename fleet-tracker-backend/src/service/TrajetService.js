@@ -104,7 +104,9 @@ class TrajetService {
       pagination: {
         currentPage: page,
         totalPages: Math.ceil(total / limit),
-        totalTrajets: total
+        totalTrajets: total,
+         hasNext: page < Math.ceil(total / limit),
+        hasPrev: page > 1
       }
     };
   }

@@ -10,6 +10,7 @@ import AdminRoute from './src/routes/AdminRoute.js'
 import AuthRoute from './src/routes/AuthRoute.js'
 import PneuRoute from './src/routes/PneuRoute.js';
 import TrajetRoute from './src/routes/TrajetRoute.js';
+import ConsoRoute from './src/routes/ConsoRoute.js'
 dotenv.config();
 
 
@@ -38,8 +39,11 @@ app.use('/remorques', remorqueRoute);
 
 app.use('/admin',AdminRoute);
 app.use('/auth',AuthRoute);
-app.use('/pneus',auth,authorize('admin'),PneuRoute);
+// app.use('/pneus',auth,authorize('admin'),PneuRoute);
+app.use('/pneus',PneuRoute);
 app.use('/trajets', TrajetRoute);
+app.use('/consommation',auth,ConsoRoute);
+
 
 
 app.get('/', (req, res) => {

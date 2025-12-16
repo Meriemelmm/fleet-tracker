@@ -105,8 +105,10 @@ class PneuController{
      }
      deletePneu=async(req,res,next)=>{
         try{
-            id=req.params.id;
-            const pneu=await  PneuService.deletePneu(id);
+            console.log("hello delete pneu");
+            console.log("id",req.params.id);
+             const id=req.params.id;
+             const pneu=await  PneuService.deletePneu(id);
             if(!pneu){
                 res.status(404).json({
                     succes:false,
@@ -122,7 +124,7 @@ class PneuController{
 
         }
         catch(error){
-            res.staus(500).json({
+            res.status(500).json({
                 succes:false,
                 message:"Server Error",
                 error:error.message
